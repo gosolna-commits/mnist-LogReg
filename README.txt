@@ -1,0 +1,1 @@
+Mnist app med model Logistisk regression

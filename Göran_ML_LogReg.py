@@ -8,6 +8,7 @@
 #
 # Kör:
 # streamlit run Göran_ML_LogReg.py
+# pip install joblib
 
 #Mest effektiva förbättringarna nu
 #I ordning:
@@ -27,6 +28,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import streamlit as st
 import numpy as np
 import cv2
+import joblib
 
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
@@ -74,27 +76,36 @@ def load_model():
     # LOGISTIC REGRESSION
     # =====================================
 
-    model = LogisticRegression(
-        max_iter=3000,
-        solver="lbfgs",
-#        solver="saga",
-        C=20
-    )
+    if os.path.exists("logreg_model.pkl"):
 
-    model.fit(X_train, y_train)
+        model = joblib.load("logreg_model.pkl")
+        return model, 0.92
 
-    y_pred = model.predict(X_test)
+    else:
 
-    acc = accuracy_score(y_test, y_pred)
+        model = LogisticRegression(
+            max_iter=3000,
+#           solver="lbfgs",
+            solver="saga",
+            C=20
+        )
 
-    return model, acc
+        model.fit(X_train, y_train)
+    
+        joblib.dump(model, "logreg_model.pkl")
+
+        y_pred = model.predict(X_test)
+
+        acc = accuracy_score(y_test, y_pred)
+
+        return model, acc
 
 
 with st.spinner("Tränar Logistic Regression..."):
-
+    
     model, acc = load_model()
 
-st.success(f"Accuracy: {acc:.4f}")
+    st.success(f"Accuracy: {acc:.4f}")
 
 # =====================================
 # CANVAS

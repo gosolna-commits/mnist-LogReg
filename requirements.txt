@@ -1,0 +1,7 @@
+streamlit
+streamlit-drawable-canvas
+scikit-learn
+numpy
+pillow
+opencv-python-headless
+tensorflow
